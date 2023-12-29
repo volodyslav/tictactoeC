@@ -1,29 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-char combination(char place[])
-{
-    for (int i = 0; i < 9; i += 3)
-    {
-        if (place[i] == place[i + 1] && place[i + 1] == place[i + 2] && place[i] != ' ')
-        {
-            printf("Win %c", place[i]);
-        }
-    }
-    for (int j = 0; j < 9; j += 3)
-    {
-        if (place[j] == place[j + 3] && place[j + 3] == place[j + 6] && place[j] != ' ')
-        {
-            printf("Win %c", place[j]);
-        }
-    }
-    if ((place[0] == place[4] && place[4] == place[8] && place[0] != ' ') ||
-        (place[2] == place[4] && place[4] == place[6] && place[2] != ' '))
-    {
-        printf("Win %c", place[4]);
-    }
-}
+
+char combination(char place[]);
 int randomAI(char array[], int size);
+
 int main()
 {
     int numSum = 0;
@@ -33,10 +14,15 @@ int main()
 
     do
     {
+        char winner = combination(placeNumber);
         int number;
+        if (winner != ' ')
+        {
+            printf("Winner %c", winner);
+            break;
+        }
+        printf("\nPrint number between 0 and 8 ");
         scanf("%d", &number);
-        printf("Number %d", number);
-
         if (number >= 0 && number < 9)
         {
             if (placeNumber[number] != ' ')
@@ -56,6 +42,7 @@ int main()
                 {
                     placeNumber[random] = ai;
                 }
+
                 numSum++;
                 printf("\n");
                 printf(" %c | %c | %c\n", placeNumber[0], placeNumber[1], placeNumber[2]);
@@ -64,7 +51,12 @@ int main()
                 printf("-----------\n");
                 printf(" %c | %c | %c\n", placeNumber[6], placeNumber[7], placeNumber[8]);
                 printf("\n");
-                combination(placeNumber);
+                // printf("%d", numSum);
+                if (numSum == 5)
+                {
+                    printf("Draw");
+                    break;
+                }
             }
         }
 
@@ -77,6 +69,30 @@ int main()
     return 0;
 }
 
+char combination(char place[])
+{
+    for (int i = 0; i < 9; i += 3)
+    {
+        if ((place[i] == place[i + 1] && place[i + 1] == place[i + 2]) && (place[i + 1] == 'X' || place[i + 1] == 'O'))
+        {
+            return place[i + 1];
+        }
+    }
+    for (int j = 0; j < 9; j += 1)
+    {
+        if ((place[j] == place[j + 3] && place[j + 3] == place[j + 6]) && (place[j + 3] == 'X' || place[j + 3] == 'O'))
+        {
+            return place[j + 3];
+        }
+    }
+    if (((place[0] == place[4] && place[4] == place[8]) && (place[4] == 'X' || place[4] == 'O')) ||
+        ((place[2] == place[4] && place[4] == place[6]) && (place[4] == 'X' || place[4] == 'O')))
+    {
+        return place[4];
+    }
+    return ' ';
+}
+
 int randomAI(char array[], int size)
 {
     srand(time(NULL));
@@ -84,13 +100,12 @@ int randomAI(char array[], int size)
     int randomCount = 0;
     do
     {
-        random = rand() % 9;
+        random = rand() % size;
         randomCount++;
-        if (randomCount > 8)
+        if (randomCount > size)
         {
             break;
         }
-        printf("\nRandom %d", random);
 
     } while (array[random] != ' ');
 
